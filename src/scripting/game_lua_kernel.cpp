@@ -2107,10 +2107,44 @@ int game_lua_kernel::intf_put_unit(lua_State *L)
 		} else if (unit_arg != 1) {
 			deprecated_message("wesnoth.put_unit(x, y, unit)", DEP_LEVEL::FOR_REMOVAL, {1, 15, 0}, "Use wesnoth.put_unit(unit, x, y) or unit:to_map(x, y) instead.");
 		}
-		unit_ptr u(new unit(cfg, true, vcfg));
-		put_unit_helper(loc);
-		u->set_location(loc);
-		units().insert(u);
+		auto prev = units().find(loc);
+		if(prev.valid()) {
+			// TODO: Consider whether the destroy/construct can be replaced by use of the assignment operator.
+			unit_ptr u = prev.get_shared_ptr();
+			// Copy the list of attack pointers into a vector.
+			// Not using const or auto to ensure that they are really copied.
+			std::vector<attack_ptr> old_attacks { u->attacks().begin(), u->attacks().end() };
+			if(game_display_) {
+				game_display_->invalidate(loc);
+			}
+
+			u->~unit();
+			resources::whiteboard->on_kill_unit();
+			new(u.get()) unit(cfg, true, vcfg);
+
+			// Again, make sure the pointers are copied.
+			std::vector<attack_ptr> new_attacks { u->attacks().begin(), u->attacks().end() };
+			if(old_attacks.size() > new_attacks.size()) {
+				// TODO: If the removed weapon was being used by an ongoing attack this could still cause problems...
+				old_attacks.resize(new_attacks.size());
+			}
+			// We can ignore any brand-new attacks.
+			for(size_t i = 0; i < old_attacks.size(); i++) {
+				// Destroy the old attack
+				old_attacks[i]->~attack_type();
+				// Copy the new attack into the old attack's memory
+				new(old_attacks[i].get()) attack_type(*new_attacks[i]);
+				// Reset the new attack pointer to point to the new copy
+				new_attacks[i].reset(old_attacks[i].get());
+			}
+
+			u->set_location(loc);
+		} else {
+			unit_ptr u(new unit(cfg, true, vcfg));
+			put_unit_helper(loc);
+			u->set_location(loc);
+			units().insert(u);
+		}
 	} else {
 		deprecated_message("wesnoth.put_unit(x, y)", DEP_LEVEL::FOR_REMOVAL, {1, 15, 0}, "Use wesnoth.erase_unit(x, y) or unit:erase() instead.");
 		put_unit_helper(loc);
