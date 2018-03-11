@@ -95,17 +95,6 @@ function helper.set_wml_tag_metatable(t)
 	return setmetatable(t, proxy_tag_mt)
 end
 
---! Displays a WML message box with attributes from table @attr and options
---! from table @options.
---! @return the index of the selected option.
---! @code
---! local result = helper.get_user_choice({ speaker = "narrator" },
---!     { "Choice 1", "Choice 2" })
---! @endcode
-function helper.get_user_choice(attr, options)
-	return wesnoth.intf.get_user_choice(attr, options)
-end
-
 --! Returns an iterator over adjacent locations that can be used in a for-in loop.
 -- Not deprecated because, unlike wesnoth.map.get_adjacent_tiles,
 -- this verifies that the locations are on the map.
@@ -287,5 +276,6 @@ helper.shallow_parsed = wesnoth.deprecate_api('helper.shallow_parsed', 'wml.shal
 helper.set_wml_var_metatable = wesnoth.deprecate_api('helper.set_wml_var_metatable', 'wml.variable.proxy', 1, nil, helper.set_wml_var_metatable)
 helper.set_wml_tag_metatable = wesnoth.deprecate_api('helper.set_wml_tag_metatable', 'wml.tag', 1, nil, helper.set_wml_tag_metatable)
 helper.move_unit_fake = wesnoth.deprecate_api('helper.move_unit_fake', 'wesnoth.intf.move_unit_fake', 1, nil, wesnoth.intf.move_unit_fake)
+helper.get_user_choice = wesnoth.deprecate_api('helper.get_user_choice', 'wesnoth.intf.get_user_choice', 1, nil, wesnoth.intf.get_user_choice)
 
 return helper
