@@ -437,10 +437,10 @@ end
 gui = {dialog = {}}
 
 gui.show_menu = wesnoth.show_menu
-gui.show_speech = wesnoth.show_message_dialog
+gui.show_narration = wesnoth.show_message_dialog
 gui.show_popup = wesnoth.show_popup_dialog
 gui.show_story = wesnoth.show_story
-gui.show_message = wesnoth.show_message
+gui.show_prompt = wesnoth.show_message_box
 gui.alert = wesnoth.alert
 gui.confirm = wesnoth.confirm
 gui.show_lua_console = wesnoth.show_lua_console
@@ -534,10 +534,10 @@ wesnoth.tovconfig = wesnoth.deprecate_api('wesnoth.tovconfig', 'wml.tovconfig', 
 wesnoth.debug = wesnoth.deprecate_api('wesnoth.debug', 'wml.tostring', 1, nil, wesnoth.debug)
 -- GUI module
 wesnoth.show_menu = wesnoth.deprecate_api('wesnoth.show_menu', 'gui.show_menu', 1, nil, gui.show_menu)
-wesnoth.show_message_dialog = wesnoth.deprecate_api('wesnoth.show_message_dialog', 'gui.show_speech', 1, nil, gui.show_speech)
+wesnoth.show_message_dialog = wesnoth.deprecate_api('wesnoth.show_message_dialog', 'gui.show_narration', 1, nil, gui.show_narration)
 wesnoth.show_popup_dialog = wesnoth.deprecate_api('wesnoth.show_popup_dialog', 'gui.show_popup', 1, nil, gui.show_popup)
 wesnoth.show_story = wesnoth.deprecate_api('wesnoth.show_story', 'gui.show_story', 1, nil, gui.show_story)
-wesnoth.show_message = wesnoth.deprecate_api('wesnoth.show_message', 'gui.show_message', 1, nil, gui.show_message)
+wesnoth.show_message_box = wesnoth.deprecate_api('wesnoth.show_message_box', 'gui.show_prompt', 1, nil, gui.show_prompt)
 wesnoth.alert = wesnoth.deprecate_api('wesnoth.alert', 'gui.alert', 1, nil, gui.alert)
 wesnoth.confirm = wesnoth.deprecate_api('wesnoth.confirm', 'gui.confirm', 1, nil, gui.confirm)
 wesnoth.show_lua_console = wesnoth.deprecate_api('wesnoth.show_lua_console', 'gui.show_lua_console', 1, nil, gui.show_lua_console)
