@@ -396,6 +396,61 @@ if wesnoth.kernel_type() == "Game Lua Kernel" then
 	end
 end
 
+--[========[GUI2 Dialog Manipulations]========]
+
+gui = {dialog = {}}
+
+gui.show_menu = wesnoth.show_menu
+gui.show_speech = wesnoth.show_message_dialog
+gui.show_popup = wesnoth.show_popup_dialog
+gui.show_story = wesnoth.show_story
+gui.show_message = wesnoth.show_message
+gui.alert = wesnoth.alert
+gui.confirm = wesnoth.confirm
+gui.show_lua_console = wesnoth.show_lua_console
+if wesnoth.kernel_type() == "Game Lua Kernel" then
+	gui.show_inspector = wesnoth.gamestate_inspector
+end
+gui.dialog.show = wesnoth.show_dialog
+gui.dialog.get_value = wesnoth.get_dialog_value
+gui.dialog.set_value = wesnoth.set_dialog_value
+gui.dialog.set_visible = wesnoth.set_dialog_visible
+gui.dialog.set_callback = wesnoth.set_dialog_callback
+gui.dialog.set_active = wesnoth.set_dialog_active
+gui.dialog.set_canvas = wesnoth.set_dialog_canvas
+gui.dialog.set_focus = wensoth.set_dialog_focus
+gui.dialog.set_markup = wesnoth.set_dialog_markup
+gui.dialog.remove_item = wesnoth.remove_dialog_item
+gui.dialog.add_tree_node = wesnoth.add_dialog_tree_node
+gui.dialog.add_widget_definition = wesnoth.add_widget_definition
+
+--! Displays a WML message box with attributes from table @attr and options
+--! from table @options.
+--! @return the index of the selected option.
+--! @code
+--! local result = helper.get_user_choice({ speaker = "narrator" },
+--!     { "Choice 1", "Choice 2" })
+--! @endcode
+function helper.get_user_choice(attr, options)
+	local result = 0
+	function wesnoth.__user_choice_helper(i)
+		result = i
+	end
+	local msg = {}
+	for k,v in pairs(attr) do
+		msg[k] = attr[k]
+	end
+	for k,v in ipairs(options) do
+		table.insert(msg, wml.tag.option, { message = v,
+			wml.tag.command, { wml.tag.lua, {
+				code = string.format("wesnoth.__user_choice_helper(%d)", k)
+			}}})
+	end
+	wml_actions.message(msg)
+	wesnoth.__user_choice_helper = nil
+	return result
+end
+
 -- Some C++ functions are deprecated; apply the messages here.
 -- Note: It must happen AFTER the C++ functions are reassigned above to their new location.
 -- These deprecated functions will probably never be removed.
